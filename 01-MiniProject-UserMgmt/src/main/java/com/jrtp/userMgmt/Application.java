@@ -1,4 +1,4 @@
-package com.jrtp.__Mini_Project_User_Mgmt_App;
+package com.jrtp.userMgmt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

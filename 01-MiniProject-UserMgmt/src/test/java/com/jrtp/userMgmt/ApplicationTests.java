@@ -1,4 +1,4 @@
-package com.jrtp.__Mini_Project_User_Mgmt_App;
+package com.jrtp.userMgmt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
