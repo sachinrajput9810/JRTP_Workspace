@@ -1,0 +1,13 @@
+.idea
+.vscode
+*.bin
+*.class
+*.jar
+*.log
+*.lock
+*.out
+*.ser
+*.swp
+*.swo
+*.tmp
+*.zip
