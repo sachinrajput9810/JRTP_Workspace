@@ -14,17 +14,18 @@ import java.time.LocalDate;
 public class UserAccount {
     @Id
     @GeneratedValue
-    private Integer userId ;
-    private String fullName ;
-    private String email ;
-    private Long phoneNumber ;
-    private String gender ;
-    private LocalDate dob ;
-    private Long ssn ;
-    private String activeSw = "Y" ;
+    private Integer userId;
+    private String fullName;
+    private String email;
+    private Long phoneNumber;
+    private String gender;
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dob;
+    private Long ssn;
+    private String activeSw = "Y";
     @CreationTimestamp
-    private LocalDate createdDate ;
+    private LocalDate createdDate;
     @UpdateTimestamp
-    private LocalDate updatedDate ;
+    private LocalDate updatedDate;
 
 }

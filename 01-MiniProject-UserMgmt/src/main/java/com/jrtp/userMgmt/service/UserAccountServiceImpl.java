@@ -16,13 +16,16 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public String saveOrUpdateUserAccount(UserAccount userAccount) {
+        Integer userId = userAccount.getUserId();
+
         // upsert operation
         userAccountRepo.save(userAccount);
-        Integer userId = userAccount.getUserId();
+
         if (userId == null) {
             return "User account created";
-        } else
+        } else {
             return "User account updated";
+        }
     }
 
     @Override
@@ -60,4 +63,3 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
     }
 }
- 
