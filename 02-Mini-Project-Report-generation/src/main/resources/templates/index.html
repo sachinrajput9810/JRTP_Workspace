@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Plan Report Generation</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f2f2f2 0%, #e0e0e0 40%, #cfcfcf 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .filter-section,
+        .email-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .filter-section label,
+        .email-section label {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .filter-section .form-select,
+        .filter-section .form-control,
+        .email-section .form-control {
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn-search {
+            background: #4f7eff;
+            color: white;
+            border: none;
+            padding: 8px 30px;
+            border-radius: 4px;
+        }
+
+        .btn-search:hover {
+            background: #3d6ae8;
+            color: white;
+        }
+
+        .btn-email {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 25px;
+            border-radius: 4px;
+        }
+
+        .btn-email:hover {
+            background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
+            color: white;
+        }
+
+        .table-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .table thead th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .table tbody td {
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 15px;
+        }
+
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .email-section h6 {
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header-bar">
+        <div class="container">
+            <h4 class="text-white mb-0">Citizen Plan Reports</h4>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <form th:action="@{/search}" method="post" th:object="${criteria}">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-2">
+                        <label>Plan Name</label>
+                        <select class="form-select" th:field="*{planName}">
+                            <option value="">-Plan Name-</option>
+                            <option th:each="plan : ${planNames}" th:value="${plan}" th:text="${plan}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Plan Status</label>
+                        <select class="form-select" th:field="*{planStatus}">
+                            <option value="">-Plan Status-</option>
+                            <option th:each="status : ${planStatuses}" th:value="${status}" th:text="${status}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Gender</label>
+                        <select class="form-select" th:field="*{gender}">
+                            <option value="">- Gender -</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Start Date</label>
+                        <input type="date" class="form-control" th:field="*{planStartDate}" placeholder="yyyy-mm-dd">
+                    </div>
+                    <div class="col-md-2">
+                        <label>End Date</label>
+                        <input type="date" class="form-control" th:field="*{planEndDate}" placeholder="yyyy-mm-dd">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-search w-100">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-section" th:if="${citizens != null}">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex gap-2">
+                    <a th:href="@{/excel}" class="btn btn-success btn-sm">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                    </a>
+                    <a th:href="@{/pdf}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                    </a>
+                </div>
+            </div>
+            
+            <table id="citizenTable" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>S.NO</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile Number</th>
+                        <th>Gender</th>
+                        <th>SSN</th>
+                        <th>Plan Name</th>
+                        <th>Plan Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="citizen, iterStat : ${citizens}">
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${citizen.name}"></td>
+                        <td th:text="${citizen.email}"></td>
+                        <td th:text="${citizen.phno}"></td>
+                        <td th:text="${citizen.gender}"></td>
+                        <td th:text="${citizen.ssn}"></td>
+                        <td th:text="${citizen.planName}"></td>
+                        <td th:text="${citizen.planStatus}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Email Section -->
+            <div class="email-section mt-4">
+                <h6><i class="bi bi-envelope me-2"></i>Send Report via Email</h6>
+                <form th:action="@{/send-email}" method="post">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label>Email Address</label>
+                            <input type="email" class="form-control" name="email" placeholder="Enter email address" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Report Format</label>
+                            <div class="d-flex gap-3 mt-1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="sendPdf" id="sendPdf" value="true">
+                                    <label class="form-check-label" for="sendPdf">
+                                        <i class="bi bi-file-earmark-pdf text-danger"></i> PDF
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="sendExcel" id="sendExcel" value="true">
+                                    <label class="form-check-label" for="sendExcel">
+                                        <i class="bi bi-file-earmark-excel text-success"></i> Excel
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-email w-100">
+                                <i class="bi bi-send me-1"></i>Send Email
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Fixed DataTable Script -->
+    <script th:inline="none">
+        $(document).ready(function () {
+            $('#citizenTable').DataTable({
+                pageLength: 10,
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    ['10', '25', '50', 'All']
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>
